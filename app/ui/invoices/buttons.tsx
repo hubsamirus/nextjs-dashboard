@@ -1,6 +1,8 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteInvoice } from '@/app/lib/actions';
+import { deleteInvoice, State } from '@/app/lib/actions';
+import { useActionState } from 'react';
+import { nullable } from 'zod/v4';
 
 export function CreateInvoice() {
   return (
@@ -26,8 +28,11 @@ export function UpdateInvoice({ id }: { id: string }) {
 }
 
 export function DeleteInvoice({ id }: { id: string }) {
+  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const initialState: State = { message: '', errors: {} };
+  const [state, formAction] = useActionState( deleteInvoiceWithId , initialState);
   return (
-    <form action={deleteInvoice}>
+    <form action={formAction}>
       <input type="hidden" name="id" value={id} />
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
